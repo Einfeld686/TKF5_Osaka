@@ -35,8 +35,8 @@ const CONFIG_HEADERS = {
   SLACK_WEBHOOK: 'slack_webhook',      // 平文でOK（方針どおり）
   MODE: 'mode',                        // 'central' | 'local' | 'none'
   NOTIFY_TIMING: 'notify_timing',      // 'immediate' | 'morning' | 'both'
-  STATUS: 'status',                    // [NEW] 実行結果/エラー
-  LAST_UPDATED: 'last_updated'         // [NEW] 最終実行日時
+  STATUS: 'status',                    // 実行結果/エラー
+  LAST_UPDATED: 'last_updated'         // 最終実行日時
 };
 
 // [NEW] Configシートの入力規則定義

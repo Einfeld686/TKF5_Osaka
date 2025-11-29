@@ -51,6 +51,11 @@ function initConfigSheet() {
 
   // ヘッダー定義から配列を作成
   const headers = Object.values(CONFIG_HEADERS);
+  const lcBefore = sh.getLastColumn();
+  const existingHeaders = (sh.getLastRow() >= 1 && lcBefore > 0)
+    ? sh.getRange(1, 1, 1, lcBefore).getDisplayValues()[0].map(h => String(h).trim())
+    : [];
+  const missingHeaders = headers.filter(h => existingHeaders.indexOf(h) === -1);
   
   // ヘッダー確保
   const headerMap = ensureHeaders_(sh, headers);
@@ -64,14 +69,18 @@ function initConfigSheet() {
   // 入力規則適用
   applyValidation_(sh, headerMap, rules);
   
-  // 列幅調整（任意）
-  sh.setColumnWidths(1, headers.length, 120);
-  // URL列などは広めに
-  if (headerMap.has(CONFIG_HEADERS.SPREADSHEET_URL)) {
-    sh.setColumnWidth(headerMap.get(CONFIG_HEADERS.SPREADSHEET_URL) + 1, 300);
-  }
-  if (headerMap.has(CONFIG_HEADERS.SLACK_WEBHOOK)) {
-    sh.setColumnWidth(headerMap.get(CONFIG_HEADERS.SLACK_WEBHOOK) + 1, 300);
+  // 列幅調整（列を新規追加した場合のみデフォルト幅を設定）
+  if (missingHeaders.length) {
+    const DEFAULT_WIDTH = 120;
+    const WIDE_WIDTH = 300;
+    for (const header of missingHeaders) {
+      const col = headerMap.get(header);
+      if (col == null) continue;
+      const width = (header === CONFIG_HEADERS.SPREADSHEET_URL || header === CONFIG_HEADERS.SLACK_WEBHOOK)
+        ? WIDE_WIDTH
+        : DEFAULT_WIDTH;
+      sh.setColumnWidth(col + 1, width);
+    }
   }
 
   return sh;
@@ -79,27 +88,31 @@ function initConfigSheet() {
 
 /**
  * Configシートのステータス列を更新する
- * @param {string} spreadsheetId - 対象のSpreadsheet ID (URLから抽出したもの)
+ * @param {string} spreadsheetIdOrUrl - 対象のSpreadsheet ID もしくは URL
  * @param {string} status - 'OK' | 'ERROR' 等
  * @param {string} msg - 詳細メッセージ
  */
-function updateConfigStatus_(spreadsheetId, status, msg) {
+function updateConfigStatus_(spreadsheetIdOrUrl, status, msg) {
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAMES.CONFIG);
   if (!sh) return;
   
   const { headerMap, data } = readTable_(sh);
-  if (!headerMap.has(CONFIG_HEADERS.STATUS) || !headerMap.has(CONFIG_HEADERS.LAST_UPDATED)) return;
+  if (!headerMap.has(CONFIG_HEADERS.STATUS) || !headerMap.has(CONFIG_HEADERS.LAST_UPDATED) || !headerMap.has(CONFIG_HEADERS.SPREADSHEET_URL)) return;
   
   const statusCol = headerMap.get(CONFIG_HEADERS.STATUS) + 1;
   const updatedCol = headerMap.get(CONFIG_HEADERS.LAST_UPDATED) + 1;
   const urlColIdx = headerMap.get(CONFIG_HEADERS.SPREADSHEET_URL);
+  const targetId = extractSpreadsheetId_(spreadsheetIdOrUrl);
 
   // 行を探す
   for (let i = 0; i < data.length; i++) {
     const rowUrl = data[i][urlColIdx];
     const rowId = extractSpreadsheetId_(rowUrl);
     
-    if (rowId === spreadsheetId) {
+    const matchById = targetId && rowId === targetId;
+    const matchByUrl = !targetId && rowUrl === spreadsheetIdOrUrl;
+    
+    if (matchById || matchByUrl) {
       const rowNum = i + 2; // header + 1-based
       const ts = Utilities.formatDate(new Date(), APP_CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
       
@@ -109,4 +122,3 @@ function updateConfigStatus_(spreadsheetId, status, msg) {
     }
   }
 }
-
