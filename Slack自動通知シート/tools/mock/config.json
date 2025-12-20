@@ -1,0 +1,22 @@
+[
+  {
+    "enabled": true,
+    "site_code": "TOKYO",
+    "spreadsheet_url": "https://docs.google.com/spreadsheets/d/mock-doc-tokyo",
+    "task_sheet": "Tasks",
+    "members_sheet": "Members",
+    "slack_webhook": "https://hooks.slack.com/services/MOCK/TOKYO",
+    "mode": "central",
+    "notify_timing": "both"
+  },
+  {
+    "enabled": true,
+    "site_code": "OSAKA",
+    "spreadsheet_url": "https://docs.google.com/spreadsheets/d/mock-doc-osaka",
+    "task_sheet": "Tasks",
+    "members_sheet": "Members",
+    "slack_webhook": "https://hooks.slack.com/services/MOCK/OSAKA",
+    "mode": "central",
+    "notify_timing": "immediate"
+  }
+]

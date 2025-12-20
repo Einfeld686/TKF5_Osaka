@@ -71,5 +71,9 @@ const APP_CONFIG = {
   TIMEZONE: 'Asia/Tokyo',
   DISPATCH_LIMIT_PER_RUN: 80,  // 朝に送る最大件数/実行
   RATE_SLEEP_MS: 150,          // Slack送信間隔(軽い間引き)
-  NIGHTLY_SCAN_CELL_LIMIT: 5000 // 夜間スキャンの最大セル数/実行（ざっくり上限）
+  NIGHTLY_SCAN_CELL_LIMIT: 5000, // 夜間スキャンの最大セル数/実行（ざっくり上限）
+  NIGHTLY_TRIGGER_HOUR: 23,      // 夜間スキャンの実行時刻（0-23）
+  NIGHTLY_TRIGGER_NEAR_MINUTE: 0, // 0 / 15 / 30 / 45 のいずれか
+  MORNING_TRIGGER_HOUR: 8,       // 朝の送信の実行時刻（0-23）
+  MORNING_TRIGGER_NEAR_MINUTE: 0  // 0 / 15 / 30 / 45 のいずれか
 };

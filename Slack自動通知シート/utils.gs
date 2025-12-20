@@ -4,6 +4,53 @@
 
 function getActive_() { return SpreadsheetApp.getActiveSpreadsheet(); }
 
+function notifyUser_(message, level) {
+  const type = String(level || 'INFO').toUpperCase();
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (ss && typeof ss.toast === 'function') ss.toast(message, type, 5);
+  } catch (e) {}
+  if (type === 'ERROR') {
+    try {
+      SpreadsheetApp.getUi().alert(message);
+    } catch (e) {}
+  }
+  try { Logger.log(`[${type}] ${message}`); } catch (e) {}
+  if (typeof console !== 'undefined') {
+    const logFn = (type === 'ERROR' && console.error) ? console.error : console.log;
+    if (logFn) logFn(`[${type}] ${message}`);
+  }
+}
+
+function applyValidation_(sheet, headerMap, rules) {
+  if (!sheet || !headerMap || !rules) return;
+  const startRow = 2;
+  const numRows = Math.max(0, sheet.getMaxRows() - 1);
+  if (numRows <= 0) return;
+
+  for (const header in rules) {
+    if (!Object.prototype.hasOwnProperty.call(rules, header)) continue;
+    const colIdx = headerMap.get(header);
+    if (colIdx == null) continue;
+
+    const range = sheet.getRange(startRow, colIdx + 1, numRows, 1);
+    const rule = rules[header];
+
+    if (rule === 'CHECKBOX') {
+      const dv = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+      range.setDataValidation(dv);
+      continue;
+    }
+    if (Array.isArray(rule)) {
+      const dv = SpreadsheetApp.newDataValidation()
+        .requireValueInList(rule, true)
+        .setAllowInvalid(false)
+        .build();
+      range.setDataValidation(dv);
+    }
+  }
+}
+
 function readTable_(sheet) {
   const range = sheet.getDataRange();
   const values = range.getDisplayValues();

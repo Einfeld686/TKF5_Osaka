@@ -1,0 +1,39 @@
+[
+    {
+        "key": "TOKYO|123|10|5|週次MTG資料|2025-12-17",
+        "status": "PENDING",
+        "site_code": "TOKYO",
+        "spreadsheet_id": "mock-doc-tokyo",
+        "sheet_name": "Tasks",
+        "staff_name": "鈴木 花子",
+        "staff_slack_id": "U002",
+        "task_name": "週次MTG資料",
+        "deadline_iso": "2025-12-17T00:00:00.000Z",
+        "file_url": "http://file2",
+        "cell_a1": "E10",
+        "cell_link": "http://link-to-cell",
+        "reason": "overdue_or_today",
+        "slack_webhook": "https://hooks.slack.com/services/MOCK/TOKYO",
+        "template_id": "overdue",
+        "created_at": "2025-12-15T23:00:00.000Z"
+    },
+    {
+        "key": "OSAKA|456|12|8|在庫確認|2025-12-15",
+        "status": "SENT",
+        "site_code": "OSAKA",
+        "spreadsheet_id": "mock-doc-osaka",
+        "sheet_name": "Tasks",
+        "staff_name": "佐藤 健",
+        "staff_slack_id": "U001",
+        "task_name": "在庫確認",
+        "deadline_iso": "2025-12-15T00:00:00.000Z",
+        "file_url": "http://file4",
+        "cell_a1": "H12",
+        "cell_link": "http://link-to-cell",
+        "reason": "overdue_or_today",
+        "slack_webhook": "https://hooks.slack.com/services/MOCK/OSAKA",
+        "template_id": "overdue",
+        "created_at": "2025-12-14T23:00:00.000Z",
+        "sent_at": "2025-12-15T08:00:00.000Z"
+    }
+]

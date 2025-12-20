@@ -1,0 +1,20 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:sim": "node --test src/tests/*.test.js",
+    "sim:edit": "node src/simulator.js edit",
+    "sim:nightly": "node src/simulator.js nightly",
+    "sim:morning": "node src/simulator.js morning"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chalk": "^4.1.2"
+  }
+}

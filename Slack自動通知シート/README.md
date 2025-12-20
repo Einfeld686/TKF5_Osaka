@@ -11,7 +11,7 @@ Google スプレッドシートのタスク進捗を Slack に自動通知する
 
 ## セットアップ
 1. Apps Script プロジェクトに各 `.gs` ファイルをコピーします（`Slack自動通知シート` 配下）。
-2. Config シートを開き、メニュー「Central」→「設定シートの検証・修復」を実行してヘッダーと入力規則を適用。
+2. Config シートを開き、メニュー「Central」→「初期セットアップ」を実行してヘッダー/入力規則とトリガーを一括設定します（必要に応じて再実行可能）。
 3. Config シートに各拠点の設定を入力します（主な列）:
    - `enabled`: TRUE/FALSE
    - `site_code`: 任意のコード
@@ -20,16 +20,14 @@ Google スプレッドシートのタスク進捗を Slack に自動通知する
    - `slack_webhook`: 送信先 Incoming Webhook
    - `mode`: `central` / `local` / `none`
    - `notify_timing`: `immediate` / `morning` / `both`
-4. Apps Script のトリガーで以下を推奨設定:
-   - 時間主導トリガーで `nightlyScanAndQueue`（夜間）
-   - 時間主導トリガーで `morningDispatch`（朝）
+4. 時間主導トリガーの実行時刻は `constants.gs` の `APP_CONFIG` で調整できます（デフォルトは夜=23時、朝=8時）。
 
 ## 使い方
 - メニュー「Central」
+  - 「初期セットアップ」: Config初期化、入力規則適用、トリガー同期、時間主導トリガー作成をまとめて実行。
   - 「台帳反映（トリガー同期）」: Config から onEdit トリガーを各拠点に作成／削除し、結果を `status` に記録。
   - 「夜間スキャン→Queue」: 手動で夜間スキャンを実行し、Queue に追加。
   - 「朝の送信」: Queue の PENDING を Slack に送信。
-  - 「設定シートの検証・修復」: Config の入力規則・ヘッダーを再適用。
 - 即時通知: 拠点シートでチェックボックス更新時に `notify_timing` が `immediate` であれば Slack へ即時送信。
 
 ## ファイル構成（主なもの）

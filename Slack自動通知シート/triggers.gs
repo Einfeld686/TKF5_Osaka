@@ -26,9 +26,55 @@ function syncTriggersFromConfig() {
   }
 }
 
+function setupTimeTriggers_() {
+  const targets = [
+    {
+      handler: 'nightlyScanAndQueue',
+      hour: APP_CONFIG.NIGHTLY_TRIGGER_HOUR,
+      minute: APP_CONFIG.NIGHTLY_TRIGGER_NEAR_MINUTE
+    },
+    {
+      handler: 'morningDispatch',
+      hour: APP_CONFIG.MORNING_TRIGGER_HOUR,
+      minute: APP_CONFIG.MORNING_TRIGGER_NEAR_MINUTE
+    }
+  ];
+
+  const targetHandlers = new Set(targets.map(t => t.handler));
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(t => {
+    if (t.getEventType() === ScriptApp.EventType.CLOCK) {
+      const handler = t.getHandlerFunction();
+      if (targetHandlers.has(handler)) ScriptApp.deleteTrigger(t);
+    }
+  });
+
+  const allowedMinutes = new Set([0, 15, 30, 45]);
+
+  targets.forEach(t => {
+    const hour = (typeof t.hour === 'number' && t.hour >= 0 && t.hour <= 23) ? t.hour : 0;
+    let builder = ScriptApp.newTrigger(t.handler).timeBased().everyDays(1).atHour(hour);
+    if (allowedMinutes.has(t.minute)) builder = builder.nearMinute(t.minute);
+    builder.create();
+  });
+}
+
+function setupCentral_() {
+  notifyUser_('初期セットアップを開始します...', 'INFO');
+  try {
+    initConfigSheet();
+    syncTriggersFromConfig();
+    setupTimeTriggers_();
+    notifyUser_('初期セットアップが完了しました。', 'INFO');
+  } catch (e) {
+    notifyUser_(`初期セットアップに失敗しました: ${e.message}`, 'ERROR');
+  }
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Central')
+    .addItem('初期セットアップ', 'setupCentral_')
     .addItem('台帳反映（トリガー同期）', 'syncTriggersFromConfig')
     .addItem('夜間スキャン→Queue', 'nightlyScanAndQueue')
     .addItem('朝の送信', 'morningDispatch')

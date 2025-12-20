@@ -1,0 +1,49 @@
+{
+    "taskNames": [
+        "日次報告",
+        "週次MTG資料",
+        "月次請求処理",
+        "在庫確認"
+    ],
+    "deadlines": [
+        "2025-12-16",
+        "2025-12-17",
+        "2025-12-31",
+        "2025-12-15"
+    ],
+    "fileUrls": [
+        "http://file1",
+        "http://file2",
+        "",
+        "http://file4"
+    ],
+    "staffs": [
+        {
+            "name": "佐藤 健",
+            "checks": [
+                true,
+                false,
+                false,
+                true
+            ]
+        },
+        {
+            "name": "鈴木 花子",
+            "checks": [
+                false,
+                false,
+                false,
+                false
+            ]
+        },
+        {
+            "name": "高橋 誠",
+            "checks": [
+                true,
+                true,
+                true,
+                true
+            ]
+        }
+    ]
+}
